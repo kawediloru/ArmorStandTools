@@ -224,22 +224,18 @@ class Utils {
         if(e == null || (isEmpty(e.getBoots()) && isEmpty(e.getLeggings()) && isEmpty(e.getChestplate()) && isEmpty(e.getHelmet()))) {
             return "";
         }
-        return "ArmorItems:["
-                + itemInfo(e.getBoots()) + ","
-                + itemInfo(e.getLeggings()) + ","
-                + itemInfo(e.getChestplate()) + ","
-                + itemInfo(e.getHelmet())
-                + "],";
+        return "feet:{" + itemInfo(e.getBoots()) + "},"
+                + "legs:{" + itemInfo(e.getLeggings()) + "},"
+                + "chest:{" + itemInfo(e.getChestplate()) + "},"
+                + "head:{" + itemInfo(e.getHelmet()) + "}},";
     }
 
     static private String handItems(EntityEquipment e) {
         if(e == null || (isEmpty(e.getItemInMainHand()) && isEmpty(e.getItemInOffHand()))) {
             return "";
         }
-        return "HandItems:["
-                + itemInfo(e.getItemInMainHand()) + ","
-                + itemInfo(e.getItemInOffHand())
-                + "],";
+        return "mainhand:{" itemInfo(e.getItemInMainHand()) + "},"
+                "offhand:{" + itemInfo(e.getItemInOffHand()) + "}},";
     }
 
     static private String angleInfo(EulerAngle ea) {
@@ -272,37 +268,36 @@ class Utils {
 
     static String createGiveCommand(ArmorStand as, Player p) {
         StringBuilder sb = new StringBuilder("minecraft:give ");
-        sb.append(p.getName()).append(" minecraft:armor_stand{Enchantments:[{id:unbreaking,lvl:1}],HideFlags:1,display:{Name:");
+        sb.append(p.getName()).append(" minecraft:armor_stand[enchantments={unbreaking:1},tooltip_display={hidden_components:[\"minecraft:enchantments\"]},custom_name:");
         sb.append(quote(Config.configuredArmorStand));
-        sb.append(",Lore:[");
+        sb.append(",lore:[");
         boolean comma = false;
         for(String s : createItemLore(as)) {
             if(comma) sb.append(",");
             comma = true;
             sb.append(quote(s));
         }
-        sb.append("]},EntityTag:").append(createEntityTag(as)).append("}");
+        sb.append("],entity_data:{id:\"minecraft:armor_stand\",").append(createEntityTag(as)).append("}]");
         return sb.toString();
     }
 
     static String createEntityTag(ArmorStand as) {
         EntityEquipment e = as.getEquipment();
-        StringBuilder sb = new StringBuilder("{");
-        if(!as.isVisible())                 sb.append("Invisible:1,");
-        if(!as.hasBasePlate())              sb.append("NoBasePlate:1,");
-        if(!as.hasGravity())                sb.append("NoGravity:1,");
-        if(as.hasArms())                    sb.append("ShowArms:1,");
-        if(as.isSmall())                    sb.append("Small:1,");
-        if(as.isInvulnerable())             sb.append("Invulnerable:1,");
-        if(as.isGlowing())                  sb.append("Glowing:1,");
+        StringBuilder sb = new StringBuilder("");
+        if(!as.isVisible())                 sb.append("Invisible:1b,");
+        if(!as.hasBasePlate())              sb.append("NoBasePlate:1b,");
+        if(!as.hasGravity())                sb.append("NoGravity:1b,");
+        if(as.hasArms())                    sb.append("ShowArms:1b,");
+        if(as.isSmall())                    sb.append("Small:1b,");
+        if(as.isInvulnerable())             sb.append("Invulnerable:1b,");
+        if(as.isGlowing())                  sb.append("Glowing:1b,");
         if(hasDisabledSlots(as))            sb.append("DisabledSlots:").append(disabledSlotsAsInteger(as)).append(",");
-        if(as.isCustomNameVisible())        sb.append("CustomNameVisible:1,");
+        if(as.isCustomNameVisible())        sb.append("CustomNameVisible:1b,");
         if(as.getCustomName() != null)      sb.append("CustomName:").append(quote(as.getCustomName())).append(",");
-        if(as.getLocation().getYaw() != 0F) sb.append("Rotation:[").append(twoDec(as.getLocation().getYaw())).append("f],");
+        if(as.getLocation().getYaw() != 0F) sb.append("Rotation:[").append(twoDec(as.getLocation().getYaw())).append("f],equipment:{");
         sb.append(armorItems(e));
         sb.append(handItems(e));
         sb.append(pose(as));
-        sb.append("}");
         return sb.toString();
     }
 
