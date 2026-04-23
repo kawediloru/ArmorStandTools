@@ -227,7 +227,7 @@ class Utils {
         return "feet:{" + itemInfo(e.getBoots()) + "},"
                 + "legs:{" + itemInfo(e.getLeggings()) + "},"
                 + "chest:{" + itemInfo(e.getChestplate()) + "},"
-                + "head:{" + itemInfo(e.getHelmet()) + "}},";
+                + "head:{" + itemInfo(e.getHelmet()) + "},";
     }
 
     static private String handItems(EntityEquipment e) {
